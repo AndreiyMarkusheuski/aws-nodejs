@@ -1,10 +1,10 @@
 export const productTableConfig = {
   getAll: {
-    TableName: process.env.PRODUCT_TABLE_NAME || "AWS_products",
+    TableName: process.env.PRODUCT_TABLE_NAME,
   },
   getById: (id) => {
     return {
-      TableName: process.env.PRODUCT_TABLE_NAME || "AWS_products",
+      TableName: process.env.PRODUCT_TABLE_NAME,
       ExpressionAttributeValues: {
         ":v1": { S: id },
       },
@@ -13,7 +13,7 @@ export const productTableConfig = {
   },
   create: (data) => {
     return {
-      TableName: process.env.PRODUCT_TABLE_NAME || "AWS_products",
+      TableName: process.env.PRODUCT_TABLE_NAME,
       Item: data,
     };
   },
@@ -22,7 +22,7 @@ export const productTableConfig = {
 export const stockTableConfig = {
   getById: (id) => {
     return {
-      TableName: process.env.STOCK_TABLE_NAME || "AWS_product_stock",
+      TableName: process.env.STOCK_TABLE_NAME,
       ExpressionAttributeValues: {
         ":v1": { S: id },
       },
@@ -31,7 +31,7 @@ export const stockTableConfig = {
   },
   create: (data) => {
     return {
-      TableName: process.env.PRODUCT_TABLE_NAME || "AWS_product_stock",
+      TableName: process.env.PRODUCT_TABLE_NAME,
       Item: data,
     };
   },
