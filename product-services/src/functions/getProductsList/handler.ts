@@ -1,19 +1,20 @@
-import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
-import { formatJSONResponse } from "@libs/api-gateway";
-import { middyfy } from "@libs/lambda";
+import DB from "../../db";
+import { RESPONSE } from "../../utils/response";
+import { parseResult } from "../../utils/parse";
+import isDefined from "../tools/is-defined";
+import { productTableConfig } from "../../db/utils/consts";
 
-import schema from "./schema";
-import mockData from "./mock.json";
+const getProductsList = async (event) => {
+  console.log('"getProductsList", event: ', event);
 
-const getProductsList: ValidatedEventAPIGatewayProxyEvent<
-  typeof schema
-> = async (event) => {
-  const { data, headers } = mockData;
-  return {
-    headers: headers,
-    statusCode: 200,
-    body: JSON.stringify(data),
-  };
+  try {
+    const db = new DB();
+    const result = await db.getAll(productTableConfig.getAll);
+    return RESPONSE._200(parseResult(result.Items));
+  } catch (e) {
+    console.log(e);
+    return RESPONSE._500();
+  }
 };
 
-export const main = middyfy(getProductsList);
+export const main = getProductsList;
