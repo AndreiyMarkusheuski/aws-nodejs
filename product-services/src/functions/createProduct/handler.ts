@@ -1,10 +1,10 @@
 import { validate, v4 as uuidv4 } from "uuid";
 
 import DB from "../../db";
-import { RESPONSE } from "../../utils/response";
-import { parseToDBData, parseResult } from "../../utils/parse";
-import { getProductWithStock } from "../../utils/get-product-stoke";
-import isDefined from "../tools/is-defined";
+import { RESPONSE } from "src/utils/response";
+import { parseToDBData, parseResult } from "src/utils/parse";
+import { getProductWithStock } from "src/utils/get-product-stoke";
+import isDefined from "src/utils/tools/is-defined";
 
 import { productTableConfig, stockTableConfig } from "../../db/utils/consts";
 
