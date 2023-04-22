@@ -1,7 +1,7 @@
 import DB from "../../db";
-import { RESPONSE } from "../../utils/response";
-import { parseResult } from "../../utils/parse";
-import isDefined from "../tools/is-defined";
+import { RESPONSE } from "src/utils/response";
+import { parseResult } from "src/utils/parse";
+import isDefined from "src/utils/tools/is-defined";
 import { productTableConfig } from "../../db/utils/consts";
 
 const getProductsList = async (event) => {
