@@ -3,6 +3,7 @@ import type { AWS } from "@serverless/typescript";
 import getProductsList from "@functions/getProductsList";
 import getProductsById from "@functions/getProductsById";
 import createProduct from "@functions/createProduct";
+import catalogBatchProcess from "@functions/catalogBatchProcess";
 
 const serverlessConfiguration: AWS = {
   service: "product-services",
@@ -20,11 +21,81 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      SNS_ARN: {
+        Ref: "createProductTopic",
+      },
+      SQS_URL: {
+        Ref: "catalogItemsQueue",
+      },
+      PRODUCT_TABLE_NAME: 'AWS_products',
+      STOCK_TABLE_NAME: "AWS_product_stock",
+    },
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: ["sns:*"],
+        Resource: {
+          Ref: "createProductTopic",
+        },
+      },
+      {
+        Effect: "Allow",
+        Action: ["dynamodb:*"],
+        Resource: "arn:aws:dynamodb:us-east-1:119690174418:table/AWS_products",
+      },
+      {
+        Effect: "Allow",
+        Action: ["dynamodb:*"],
+        Resource: "arn:aws:dynamodb:us-east-1:119690174418:table/AWS_product_stock",
+      },
+    ],
+  },
+  functions: {
+    getProductsList,
+    getProductsById,
+    createProduct,
+    catalogBatchProcess,
+  },
+  package: { individually: true },
+  resources: {
+    Resources: {
+      catalogItemsQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "catalog-items-sqs",
+        },
+      },
+      createProductTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          TopicName: "create-product-topic",
+        },
+      },
+      createProductTopicSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Endpoint: "fs.as.8585@gmail.com",
+          Protocol: "email",
+          TopicArn: {
+            Ref: "createProductTopic",
+          },
+        },
+      },
+      createProductTopicSubscriptionFiltered: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Endpoint: "as.fs.8585@gmail.com",
+          Protocol: "email",
+          TopicArn: {
+            Ref: "createProductTopic",
+          },
+          FilterPolicy: {
+            count: [{ numeric: [">", 1] }],
+          },
+        },
+      },
     },
   },
-  // import the function via paths
-  functions: { getProductsList, getProductsById, createProduct },
-  package: { individually: true },
   custom: {
     esbuild: {
       bundle: true,

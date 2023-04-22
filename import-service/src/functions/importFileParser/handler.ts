@@ -5,6 +5,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { S3Event } from "aws-lambda";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import { parse } from "csv-parse";
 
 import { RESPONSE } from "src/utils/response";
@@ -17,6 +18,7 @@ const importFileParser = async (event: S3Event) => {
   try {
     const { Records: records } = event;
     const s3 = new S3Client({ region: REGION });
+    const client = new SQSClient({ region: REGION });
     console.log("Records: ", records);
 
     await Promise.all(
@@ -35,7 +37,23 @@ const importFileParser = async (event: S3Event) => {
 
           stream
             .pipe(parse())
-            .on("data", (data) => console.info("Data: ", data))
+            .on("data", async (data) => {
+              const sqsUrl = process.env.SQS_URL;
+              console.log('SQS Url: ', sqsUrl, ', data: ', data);
+
+              try {
+                const command = new SendMessageCommand({
+                  MessageBody: JSON.stringify(data),
+                  QueueUrl: sqsUrl,
+                })
+                const response = await client.send(command);
+
+                console.info('Successfully. SQS Url', sqsUrl);
+              } catch (err) {
+                console.error('Error. SQS Url', sqsUrl);
+                console.error('Error. Error', err);
+              }
+            })
             .on("error", (e) => {
               console.error("Error", e);
               reject();
