@@ -10,7 +10,9 @@
   "engines": {
     "node": ">=14.15.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "serverless-dotenv-plugin": "^6.0.0"
+  },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.309.0",
     "@aws-sdk/client-s3": "^3.312.0",
