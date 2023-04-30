@@ -1,2 +1,1 @@
-export { default as importFileParser } from './importFileParser';
-export { default as importProductsFile } from './importProductsFile';
+export { default as basicAuthorizer } from './basicAuthorizer';
