@@ -36,7 +36,10 @@ const basicAuthorizer = (event, context, callback) => {
 
     console.log('Login: ', login, 'Password: ', password);
 
-    if (!isDefined(process.env[login])) callback('Unauthorized: non-existent login');
+    if (!isDefined(process.env[login])) {
+      console.log('non-existing login');
+      callback('Unauthorized');
+    }
 
     const isValidLogin = password === process.env[login];
     const effect = isValidLogin ? 'Allow' : 'Deny';
