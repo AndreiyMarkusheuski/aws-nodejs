@@ -7,7 +7,11 @@ export default {
       http: {
         method: "get",
         path: "import",
-        cors: true
+        cors: true,
+        authorizer: {
+          name: "basicAuthorizer",
+          arn: "arn:aws:lambda:us-east-1:119690174418:function:authorization-service-dev-basicAuthorizer",
+        },
       },
     },
   ],
